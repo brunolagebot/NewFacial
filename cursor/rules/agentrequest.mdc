@@ -1,0 +1,15 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+"Esta alteração pode afetar face_service.py. Deseja revisar dependências?"
+
+"Esse código ultrapassa 150 linhas. Deseja dividi-lo?"
+
+"Funcionalidade não está no roadmap. Deseja adicioná-la em docs/roadmap.md?"
+
+"Este commit não está vinculado a nenhuma versão. Deseja criar uma tag de versão nova?"
+
+"Você ainda não ativou o ambiente virtual. Deseja ativá-lo agora com source venv/bin/activate?"
+

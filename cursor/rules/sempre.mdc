@@ -1,0 +1,66 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Código limitado a 150 linhas por script (usar modularização).
+
+Cada função deve ter responsabilidade única (princípio SRP).
+
+Nomeação padronizada:
+
+snake_case para variáveis e funções
+
+PascalCase para classes
+
+É proibido o uso de dados fixos no meio do código (usar .env ou config.py).
+
+Qualquer alteração exige entrada registrada em docs/changelog.md.
+
+Sempre verificar impacto em outras funcionalidades antes de confirmar modificações.
+
+Manter a estrutura de pastas padronizada, documentada em docs/structure.md.
+
+Todo arquivo alterado deve ter seu diff identificado com precisão.
+
+O sistema deve garantir controle de versão individual por módulo.
+
+Toda alteração com impacto deve ser versionada semanticamente (ex: v1.2.3).
+
+Branches devem ser nomeadas com padrão: tipo/nome-da-funcionalidade (ex: feature/detector-face-mtcnn).
+
+É obrigatório usar Pull Requests para merge com revisão humana ou IA supervisionada.
+
+O projeto deve utilizar obrigatoriamente um ambiente virtual Python isolado, ativado por python3 -m venv venv e registrado no .gitignore.
+
+Todas as dependências devem ser instaladas com pip install dentro do ambiente virtual e registradas no requirements.txt com pip freeze > requirements.txt.
+
+⚙️ REGRAS TIPO: auto attached
+
+São regras que se ativam automaticamente com base no contexto:
+
+Arquivos novos em /routes/ exigem atualização em docs/routes.md.
+
+Alterações em config.py devem notificar módulos dependentes.
+
+Criação de novos arquivos .py deve acionar aviso para atualizar CHANGELOG.
+
+Alterações em arquivos de /detectors/ requerem revalidação dos testes em /tests.
+
+Modificações em arquivos versionados devem forçar geração de nova entrada no controle de versão.
+
+Ao detectar ausência de ambiente virtual, sugerir criação e ativação com instruções compatíveis com macOS.
+
+🤖 REGRAS TIPO: agent requested
+
+Regras que dependem da validação ou confirmação do desenvolvedor após sugestão da IA:
+
+"Esta alteração pode afetar face_service.py. Deseja revisar dependências?"
+
+"Esse código ultrapassa 150 linhas. Deseja dividi-lo?"
+
+"Funcionalidade não está no roadmap. Deseja adicioná-la em docs/roadmap.md?"
+
+"Este commit não está vinculado a nenhuma versão. Deseja criar uma tag de versão nova?"
+
+"Você ainda não ativou o ambiente virtual. Deseja ativá-lo agora com source ven

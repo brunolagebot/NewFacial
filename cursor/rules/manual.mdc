@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Atualizar manualmente o roadmap (docs/roadmap.md) ao criar novas funções não previstas.
+
+Executar testes finais e validações visuais antes de marcar versões como prontas.
+
+Manter e revisar os documentos:
+
+structure.md
+
+constants.md
+
+dependencies.md
+
+changelog.md
+
+Criar ou atualizar tags de versão no repositório Git manualmente quando for o caso.
+
+Criar manualmente o ambiente virtual Python, preferencialmente com:
+
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+E garantir que o venv/ esteja listado no .gitignore.

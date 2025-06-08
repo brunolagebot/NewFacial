@@ -5,12 +5,15 @@ Sistema moderno de reconhecimento facial utilizando InsightFace (ArcFace) com in
 ## Características
 
 - 🔍 **Detecção e reconhecimento facial** usando InsightFace (ArcFace)
+- 🎯 **Detecção de objetos e animais** com YOLOv8 (80+ classes)
+- 🧠 **Análise contextual com LLM** (OpenAI GPT-4V ou Ollama local)
 - 🌐 **Interface web moderna** com Bootstrap e JavaScript
 - 📱 **API REST completa** documentada com FastAPI
 - 🎥 **Suporte a streams RTSP** em tempo real
 - 💾 **Banco de dados SQLite** para armazenar embeddings faciais
 - 📊 **Dashboard com estatísticas** em tempo real
 - 🖼️ **Suporte a múltiplos formatos** de imagem (JPG, PNG, BMP, TIFF, WebP)
+- 🎨 **Detecção multimodal** combinando faces, objetos e análise inteligente
 
 ## Instalação
 
@@ -20,7 +23,7 @@ Sistema moderno de reconhecimento facial utilizando InsightFace (ArcFace) com in
 - pip
 - Câmera IP com suporte RTSP (opcional)
 
-### Passos de instalação
+### Instalação Automática (Recomendada)
 
 ```bash
 # Clone o repositório
@@ -29,11 +32,22 @@ git clone https://github.com/brunolagebot/NewFacial.git
 # Entre no diretório
 cd NewFacial
 
-# Crie um ambiente virtual (recomendado)
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
+# Execute o setup automático (macOS/Linux)
+./scripts/setup.sh
+
+# Para Windows, use instalação manual abaixo
+```
+
+### Instalação Manual
+
+```bash
+# Crie um ambiente virtual
+python3 -m venv .venv
+
+# Ative o ambiente virtual
+source .venv/bin/activate  # Linux/Mac
 # ou
-venv\Scripts\activate  # Windows
+.venv\Scripts\activate  # Windows
 
 # Instale as dependências
 pip install -r requirements.txt
@@ -43,12 +57,22 @@ pip install -r requirements.txt
 
 ### Iniciando o servidor
 
+#### Execução Automática (Recomendada)
 ```bash
-# Método 1: Usando uvicorn diretamente
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+# Script que ativa ambiente virtual automaticamente
+./scripts/run.sh
+```
 
-# Método 2: Executando o arquivo main.py
+#### Execução Manual
+```bash
+# Ativar ambiente virtual
+source .venv/bin/activate
+
+# Método 1: Executando o arquivo main.py
 python main.py
+
+# Método 2: Usando uvicorn diretamente
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ### Acessando a aplicação
@@ -56,6 +80,29 @@ python main.py
 - **Interface Web**: http://localhost:8000
 - **Documentação da API**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
+
+### Configuração Opcional
+
+#### Para Detecção de Objetos (YOLOv8)
+```bash
+pip install ultralytics
+```
+
+#### Para Análise LLM
+
+**Opção 1: OpenAI API**
+```bash
+export OPENAI_API_KEY="sua_api_key_aqui"
+```
+
+**Opção 2: Ollama Local**
+```bash
+# Instalar Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Baixar modelo multimodal
+ollama pull llava
+```
 
 ### Funcionalidades principais
 
@@ -74,7 +121,13 @@ python main.py
    - Monitoramento em tempo real
    - Detecção automática de faces conhecidas
 
-4. **Logs e Estatísticas**
+4. **Detecção Multimodal (Novo!)**
+   - Detecte 80+ classes de objetos e animais
+   - Análise contextual com LLM (GPT-4V/Ollama)
+   - Combinação inteligente de faces + objetos
+   - Anotação automática de imagens
+
+5. **Logs e Estatísticas**
    - Visualize logs de detecções
    - Acompanhe estatísticas do sistema
    - Monitore performance dos streams

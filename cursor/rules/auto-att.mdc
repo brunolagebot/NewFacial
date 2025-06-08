@@ -1,0 +1,16 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Arquivos novos em /routes/ exigem atualização em docs/routes.md.
+
+Alterações em config.py devem notificar módulos dependentes.
+
+Criação de novos arquivos .py deve acionar aviso para atualizar CHANGELOG.
+
+Alterações em arquivos de /detectors/ requerem revalidação dos testes em /tests.
+
+Modificações em arquivos versionados devem forçar geração de nova entrada no controle de versão.
+
+Ao detectar ausência de ambiente virtual, sugerir criação e ativação com instruções compatíveis com macOS.
