@@ -11,7 +11,7 @@ import atexit
 from app.config import APP_NAME, APP_VERSION, DEBUG
 from app.database.connection import init_database, get_db
 from app.database.models import Person, FaceEmbedding, DetectionLog
-from app.api import persons, recognition, rtsp, multimodal
+from app.api import persons, recognition, rtsp, multimodal, video
 from app.services.rtsp_service import rtsp_processor
 from app.models.schemas import SystemStats
 
@@ -50,6 +50,7 @@ app.include_router(persons.router, prefix="/api")
 app.include_router(recognition.router, prefix="/api")
 app.include_router(rtsp.router, prefix="/api")
 app.include_router(multimodal.router, prefix="/api")
+app.include_router(video.router, prefix="/api")
 
 # Variável para controlar tempo de início
 start_time = time.time()

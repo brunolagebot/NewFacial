@@ -10,12 +10,14 @@ class NewFacialApp {
         this.loadPersons();
         this.loadStreams();
         this.loadLogs();
+        this.loadJobs();
         this.setupEventListeners();
         
         // Atualizar estatísticas a cada 30 segundos
         setInterval(() => this.loadStats(), 30000);
         setInterval(() => this.loadStreams(), 10000);
         setInterval(() => this.loadLogs(), 30000);
+        setInterval(() => this.loadJobs(), 15000);
     }
 
     setupEventListeners() {
@@ -61,6 +63,22 @@ class NewFacialApp {
         document.getElementById('rtsp-form').addEventListener('submit', (e) => {
             e.preventDefault();
             this.addRTSPStream();
+        });
+
+        // Video processing
+        document.getElementById('video-file').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const uploadBtn = document.getElementById('upload-video-btn');
+            uploadBtn.disabled = !file;
+        });
+
+        document.getElementById('upload-video-btn').addEventListener('click', () => {
+            this.uploadVideo();
+        });
+
+        document.getElementById('youtube-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.processYouTubeVideo();
         });
     }
 
@@ -366,6 +384,181 @@ class NewFacialApp {
         }
     }
 
+    async uploadVideo() {
+        const file = document.getElementById('video-file').files[0];
+        if (!file) return;
+
+        const frameInterval = parseFloat(document.getElementById('frame-interval').value);
+        const maxFrames = parseInt(document.getElementById('max-frames').value);
+        const generateAnnotated = document.getElementById('generate-annotated').checked;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('frame_interval', frameInterval);
+        formData.append('max_frames', maxFrames);
+        formData.append('generate_annotated', generateAnnotated);
+        formData.append('report_format', 'html');
+
+        try {
+            const response = await fetch('/api/video/process-upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                document.getElementById('video-file').value = '';
+                document.getElementById('upload-video-btn').disabled = true;
+                this.showAlert(`Vídeo enviado para processamento! Job ID: ${result.job_id}`, 'success');
+                this.loadJobs();
+            } else {
+                const error = await response.json();
+                this.showAlert(error.detail || 'Erro no upload do vídeo', 'danger');
+            }
+        } catch (error) {
+            console.error('Erro no upload do vídeo:', error);
+            this.showAlert('Erro no upload do vídeo', 'danger');
+        }
+    }
+
+    async processYouTubeVideo() {
+        const youtubeUrl = document.getElementById('youtube-url').value;
+        const quality = document.getElementById('video-quality').value;
+        const reportFormat = document.getElementById('report-format').value;
+        const frameInterval = parseFloat(document.getElementById('frame-interval').value);
+        const maxFrames = parseInt(document.getElementById('max-frames').value);
+        const generateAnnotated = document.getElementById('generate-annotated').checked;
+
+        const formData = new FormData();
+        formData.append('youtube_url', youtubeUrl);
+        formData.append('quality', quality);
+        formData.append('frame_interval', frameInterval);
+        formData.append('max_frames', maxFrames);
+        formData.append('generate_annotated', generateAnnotated);
+        formData.append('report_format', reportFormat);
+
+        try {
+            const response = await fetch('/api/video/process-youtube', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                document.getElementById('youtube-form').reset();
+                this.showAlert(`Processamento do YouTube iniciado! Job ID: ${result.job_id}`, 'success');
+                this.loadJobs();
+            } else {
+                const error = await response.json();
+                this.showAlert(error.detail || 'Erro no processamento do YouTube', 'danger');
+            }
+        } catch (error) {
+            console.error('Erro no processamento do YouTube:', error);
+            this.showAlert('Erro no processamento do YouTube', 'danger');
+        }
+    }
+
+    async loadJobs() {
+        try {
+            const response = await fetch('/api/video/jobs');
+            const data = await response.json();
+            
+            const jobsList = document.getElementById('jobs-list');
+            jobsList.innerHTML = '';
+            
+            if (data.jobs.length === 0) {
+                jobsList.innerHTML = '<p class="text-muted">Nenhum job de processamento encontrado</p>';
+                return;
+            }
+            
+            data.jobs.reverse().forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = 'border rounded p-3 mb-3';
+                
+                const statusClass = {
+                    'queued': 'warning',
+                    'downloading': 'info',
+                    'processing': 'info',
+                    'completed': 'success',
+                    'failed': 'danger',
+                    'cancelled': 'secondary'
+                }[job.status] || 'secondary';
+
+                const progressBar = job.status === 'processing' || job.status === 'downloading' ? 
+                    `<div class="progress mt-2 mb-2">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-${statusClass}" 
+                             style="width: ${job.progress}%">${job.progress}%</div>
+                     </div>` : '';
+
+                const downloadLinks = job.status === 'completed' ? 
+                    `<div class="mt-3">
+                        <a href="/api/video/job/${job.job_id}/download/report" class="btn btn-sm btn-outline-primary me-2">
+                            <i class="fas fa-download"></i> Relatório
+                        </a>
+                        <a href="/api/video/job/${job.job_id}/download/video" class="btn btn-sm btn-outline-success me-2">
+                            <i class="fas fa-download"></i> Vídeo Anotado
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger" onclick="app.cancelJob('${job.job_id}')">
+                            <i class="fas fa-trash"></i> Remover
+                        </button>
+                     </div>` : 
+                    `<div class="mt-3">
+                        <button class="btn btn-sm btn-outline-danger" onclick="app.cancelJob('${job.job_id}')">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                     </div>`;
+
+                const summary = job.summary ? 
+                    `<div class="mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-chart-bar"></i> 
+                            ${job.summary.faces_detected} faces detectadas, 
+                            ${job.summary.unique_persons} pessoas únicas
+                        </small>
+                     </div>` : '';
+
+                jobDiv.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">
+                                <span class="badge bg-${statusClass}">${job.status.toUpperCase()}</span>
+                                Job ${job.job_id.substring(0, 8)}...
+                            </h6>
+                            <p class="mb-1">${job.source}</p>
+                            ${progressBar}
+                            ${summary}
+                        </div>
+                    </div>
+                    ${downloadLinks}
+                `;
+                
+                jobsList.appendChild(jobDiv);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar jobs:', error);
+        }
+    }
+
+    async cancelJob(jobId) {
+        if (!confirm('Tem certeza que deseja cancelar/remover este job?')) return;
+        
+        try {
+            const response = await fetch(`/api/video/job/${jobId}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                this.loadJobs();
+                this.showAlert('Job cancelado com sucesso!', 'success');
+            } else {
+                this.showAlert('Erro ao cancelar job', 'danger');
+            }
+        } catch (error) {
+            console.error('Erro ao cancelar job:', error);
+            this.showAlert('Erro ao cancelar job', 'danger');
+        }
+    }
+
     showAlert(message, type) {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
@@ -384,6 +577,11 @@ class NewFacialApp {
             }
         }, 5000);
     }
+}
+
+// Funções globais
+function refreshJobs() {
+    app.loadJobs();
 }
 
 // Inicializar aplicação

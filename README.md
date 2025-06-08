@@ -7,6 +7,7 @@ Sistema moderno de reconhecimento facial utilizando InsightFace (ArcFace) com in
 - 🔍 **Detecção e reconhecimento facial** usando InsightFace (ArcFace)
 - 🎯 **Detecção de objetos e animais** com YOLOv8 (80+ classes)
 - 🧠 **Análise contextual com LLM** (OpenAI GPT-4V ou Ollama local)
+- 🎬 **Processamento de vídeo completo** incluindo YouTube com análise temporal
 - 🌐 **Interface web moderna** com Bootstrap e JavaScript
 - 📱 **API REST completa** documentada com FastAPI
 - 🎥 **Suporte a streams RTSP** em tempo real
@@ -121,13 +122,21 @@ ollama pull llava
    - Monitoramento em tempo real
    - Detecção automática de faces conhecidas
 
-4. **Detecção Multimodal (Novo!)**
+4. **Detecção Multimodal**
    - Detecte 80+ classes de objetos e animais
    - Análise contextual com LLM (GPT-4V/Ollama)
    - Combinação inteligente de faces + objetos
    - Anotação automática de imagens
 
-5. **Logs e Estatísticas**
+5. **Processamento de Vídeo (Novo!)**
+   - Upload de vídeos locais (MP4, AVI, MOV, MKV, etc.)
+   - Download e processamento de vídeos do YouTube
+   - Análise temporal com timeline de aparições
+   - Geração de vídeos anotados com detecções
+   - Relatórios detalhados (JSON, HTML, TXT)
+   - Processamento assíncrono com monitoramento
+
+6. **Logs e Estatísticas**
    - Visualize logs de detecções
    - Acompanhe estatísticas do sistema
    - Monitore performance dos streams
