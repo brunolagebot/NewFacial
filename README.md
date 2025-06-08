@@ -10,7 +10,7 @@ Este projeto implementa um sistema de reconhecimento facial utilizando tecnologi
 
 ```bash
 # Clone o repositório
-git clone https://github.com/[seu-usuario]/NewFacial.git
+git clone https://github.com/brunolagebot/NewFacial.git
 
 # Entre no diretório
 cd NewFacial
@@ -37,6 +37,6 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 ## Contato
 
-Seu Nome - [seu-email@example.com]
+Bruno Lage - [bruno.lage@hotmail.com]
 
-Link do Projeto: [https://github.com/[seu-usuario]/NewFacial](https://github.com/[seu-usuario]/NewFacial) 
+Link do Projeto: [https://github.com/brunolagebot/NewFacial](https://github.com/brunolagebot/NewFacial) 
